@@ -1,3 +1,5 @@
+package tests;
+
 import helpers.BookingHelper;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
