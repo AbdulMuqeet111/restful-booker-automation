@@ -8,12 +8,10 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.response.Response;
 
 import static modelBuilder.BookingBuilder.createPartialBooking;
-import static org.assertj.core.api.Assertions.*;
 import model.Booking;
 import model.BookingResponse;
 
 import model.PartialBooking;
-import org.junit.Assert;
 import org.junit.jupiter.api.*;
 
 import static modelBuilder.BookingBuilder.createBookingData;
@@ -48,12 +46,12 @@ public final class BookingTest {
     public void GetBookingTestValidID() {
         Response response = BookingHelper.getBookingByID(bookingResponse.getBookingId());
         response.then().assertThat().statusCode(200);
-        Assert.assertEquals(response.jsonPath().getString("firstname"), bookingResponse.getBooking().getFirstName());
-        Assert.assertEquals(response.jsonPath().getString("lastname"), bookingResponse.getBooking().getLastName());
-        Assert.assertEquals(response.jsonPath().getBoolean("depositpaid"), bookingResponse.getBooking().getDepositPaid());
-        Assert.assertEquals(response.jsonPath().getInt("totalprice"), bookingResponse.getBooking().getTotalPrice());
-        Assert.assertEquals(response.jsonPath().get("bookingdates.checkin"), bookingResponse.getBooking().getBookingDates().getCheckIn());
-        Assert.assertEquals(response.jsonPath().get("bookingdates.checkout"), bookingResponse.getBooking().getBookingDates().getCheckOut());
+        Assertions.assertEquals(response.jsonPath().getString("firstname"), bookingResponse.getBooking().getFirstName());
+        Assertions.assertEquals(response.jsonPath().getString("lastname"), bookingResponse.getBooking().getLastName());
+        Assertions.assertEquals(response.jsonPath().getBoolean("depositpaid"), bookingResponse.getBooking().getDepositPaid());
+        Assertions.assertEquals(response.jsonPath().getInt("totalprice"), bookingResponse.getBooking().getTotalPrice());
+        Assertions.assertEquals(response.jsonPath().get("bookingdates.checkin"), bookingResponse.getBooking().getBookingDates().getCheckIn());
+        Assertions.assertEquals(response.jsonPath().get("bookingdates.checkout"), bookingResponse.getBooking().getBookingDates().getCheckOut());
     }
     @Test
     @Order(2)
@@ -69,6 +67,22 @@ public final class BookingTest {
         Response response = BookingHelper.getBookingByFirstName(bookingResponse.getBooking().getFirstName());
         response.then().assertThat().statusCode(200);
         response.then().assertThat().body("bookingid", hasSize(greaterThan(0)));
+    }
+    @Test
+    @Order(2)
+    public void GetBookingByInvalidFirstName()
+    {
+        Response response = BookingHelper.getBookingByFirstName("12!xa#");
+        response.then().assertThat().statusCode(200);
+        response.then().assertThat().body("bookingid", hasSize(equalTo(0)));
+    }
+    @Test
+    @Order(2)
+    public void GetBookingByDateInFirstName()
+    {
+        Response response = BookingHelper.getBookingByFirstName(bookingResponse.getBooking().getBookingDates().getCheckIn());
+        response.then().assertThat().statusCode(200);
+        response.then().assertThat().body("bookingid", hasSize(equalTo(0)));
     }
     @Test
     @Order(2)
@@ -118,9 +132,9 @@ public final class BookingTest {
         PartialBooking booking = createPartialBooking();
         Response response = BookingHelper.updatePartialBooking(booking, bookingResponse.getBookingId());
         response.then().assertThat().statusCode(200);
-        Assert.assertEquals(response.jsonPath().getString("firstname"), booking.getFirstName());
-        Assert.assertEquals(response.jsonPath().getString("lastname"), booking.getLastName());
-        Assert.assertEquals(response.jsonPath().getString("additionalneeds"), booking.getAdditionalNeeds());
+        Assertions.assertEquals(response.jsonPath().getString("firstname"), booking.getFirstName());
+        Assertions.assertEquals(response.jsonPath().getString("lastname"), booking.getLastName());
+        Assertions.assertEquals(response.jsonPath().getString("additionalneeds"), booking.getAdditionalNeeds());
 
     }
     @Test
